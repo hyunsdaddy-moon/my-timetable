@@ -99,69 +99,73 @@ timetableTitleInput.addEventListener('input', (e) => {
 
 // 화면 다시 그리기 함수 (이게 불리면 전체가 새로고침 없이 짠! 바뀝니다)
 function renderTimetable() {
-  const tbody = document.getElementById("timetableBody");
-  tbody.innerHTML = "";
+  timetableArea.innerHTML = "";
 
-  const currentTable = tablesData[currentTableIndex];
-  if (!currentTable) return;
+  const currentData = tablesData[currentTableIndex];
+  if (!currentData) return;
 
   // 제목 텍스트도 현재 시간표 제목으로 변경
-  timetableTitleInput.value = currentTable.title || "새 시간표";
+  timetableTitleInput.value = currentData.title || "새 시간표";
 
-  for (let p = 0; p < currentTable.schedule[0].length; p++) {
-    const tr = document.createElement("tr");
+  currentData.schedule.forEach((row, rowIndex) => {
+    // 4교시와 5교시 사이에 점심시간 바 생성 (인덱스 값이 4일 때)
+    if (rowIndex === 4) {
+      const lunchBreak = document.createElement("div");
+      lunchBreak.classList.add("lunch-break");
+      lunchBreak.style.cursor = "pointer"; // 누를 수 있다는 표시
+      const lunchTimeStr = currentData.lunchTime ? `<span style="font-size: 13px; font-weight: normal; margin: 0 8px; color: #df7238; background: #fff; padding: 2px 8px; border-radius: 10px;">${currentData.lunchTime}</span>` : "";
+      lunchBreak.innerHTML = `<i class="fa-solid fa-cookie-bite" style="margin-right:8px;"></i> 맛있는 점심 ${lunchTimeStr} <i class="fa-solid fa-cookie-bite" style="margin-left:8px;"></i>`;
+      lunchBreak.addEventListener("click", () => openTimeModal('lunch'));
+      timetableArea.appendChild(lunchBreak);
+    }
 
-    const thPeriod = document.createElement("th");
+    const timeRow = document.createElement("div");
+    timeRow.classList.add("time-row");
+    // 실시간으로 변할 때 너무 어지럽지 않게 초기 로드시에만 적용되거나 빠르게 처리되도록 조절 가능
+    timeRow.style.animation = "none";
+    timeRow.style.opacity = "1";
+    timeRow.style.transform = "none";
 
-    // 교시 클릭 (시간 설정 모달 호출)
-    thPeriod.innerHTML = `<div class="period-circle">${p + 1}</div><div class="period-time">${currentTable.times[p] || ""}</div>`;
-    thPeriod.style.cursor = "pointer";
-    thPeriod.addEventListener("click", () => {
-      openTimeModal(p);
+    // "교시 숫자" 및 시간 텍스트 표시 (왼쪽 첫번째 칸)
+    const timeLabel = document.createElement("div");
+    timeLabel.classList.add("time-label");
+    timeLabel.innerHTML = `<span>${rowIndex + 1}</span>`;
+
+    const timeText = document.createElement("div");
+    timeText.classList.add("time-text");
+    timeText.innerHTML = currentData.times[rowIndex] ? currentData.times[rowIndex].replace("-", "<br>-<br>").replace("~", "<br>~<br>") : "시간<br>입력";
+    timeLabel.appendChild(timeText);
+
+    timeLabel.addEventListener("click", () => openTimeModal(rowIndex));
+    timeRow.appendChild(timeLabel);
+
+    // 각 교시의 월~금 과목 카드 그리기
+    row.forEach((cellData, colIndex) => {
+      const card = document.createElement("div");
+      card.classList.add("subject-card");
+      if (cellData.colorClass) card.classList.add(cellData.colorClass);
+      if (cellData.highlight) card.classList.add("current-class");
+
+      const subjectName = document.createElement("div");
+      subjectName.classList.add("subject-name");
+      subjectName.textContent = cellData.subject;
+      card.appendChild(subjectName);
+
+      if (cellData.teacher) {
+        const teacherName = document.createElement("div");
+        teacherName.classList.add("teacher-name");
+        teacherName.textContent = cellData.teacher;
+        card.appendChild(teacherName);
+      }
+
+      // 카드 누르면 수정 팝업 열기 연결
+      card.addEventListener("click", () => showModal(colIndex, rowIndex, cellData));
+      timeRow.appendChild(card);
     });
-    tr.appendChild(thPeriod);
 
-    for (let d = 0; d < 5; d++) {
-      const td = document.createElement("td");
-      const cellData = currentTable.schedule[d][p];
-
-      let cellClass = cellData.colorClass || "subject-empty";
-
-      td.innerHTML = `
-        <div class="subject-box ${cellClass}">
-          <div class="subject-name">${cellData.subject}</div>
-          ${cellData.teacher ? `<div class="teacher-name">${cellData.teacher}</div>` : ""}
-        </div>
-      `;
-
-      // 칸을 클릭하면 모달이 열림 (showModal 함수 사용)
-      td.addEventListener("click", () => {
-        showModal(d, p, cellData);
-      });
-
-      tr.appendChild(td);
-    }
-    tbody.appendChild(tr);
-
-    // 점심시간 바 (4교시 후)
-    if (p === 3) {
-      const trLunch = document.createElement("tr");
-      trLunch.classList.add("lunch-row");
-      const tdLunchMode = document.createElement("td");
-      tdLunchMode.colSpan = 6;
-      tdLunchMode.innerHTML = `<span><i class="fa-solid fa-utensils"></i> 맛있는 점심 시간 <span class="lunch-time-text">${currentTable.lunchTime || ""}</span></span>`;
-
-      // 점심시간 바 클릭 (점심시간 설정 모달 호출)
-      tdLunchMode.style.cursor = "pointer";
-      tdLunchMode.addEventListener("click", () => {
-        openLunchTimeModal();
-      });
-      trLunch.appendChild(tdLunchMode);
-      tbody.appendChild(trLunch);
-    }
-  }
+    timetableArea.appendChild(timeRow);
+  });
 }
-// 이전 버전의 잔재 삭제 완료
 
 // 하단 탭 버튼 그리기 마법!
 function renderTabs() {
@@ -374,13 +378,14 @@ btnDelete.addEventListener("click", () => {
   const d = currentEditInfo.dayIndex;
   const p = currentEditInfo.periodIndex;
 
-  tablesData[currentTableIndex].schedule[d][p] = {
+  tablesData[currentTableIndex].schedule[p][d] = {
     subject: "자습",
     teacher: "",
     colorClass: "subject-empty"
   };
 
   saveAllData();
+  renderTimetable();
   closeModal();
 });
 
@@ -392,13 +397,14 @@ btnSave.addEventListener("click", () => {
   const d = currentEditInfo.dayIndex;
   const p = currentEditInfo.periodIndex;
 
-  tablesData[currentTableIndex].schedule[d][p] = {
+  tablesData[currentTableIndex].schedule[p][d] = {
     subject: newSubject,
     teacher: newTeacher,
     colorClass: selectedColor || "subject-empty"
   };
 
   saveAllData();
+  renderTimetable();
   closeModal();
 });
 
