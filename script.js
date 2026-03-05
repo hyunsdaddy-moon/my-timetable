@@ -315,7 +315,7 @@ function showModal(dayIndex, periodIndex, existingData) {
   }
 
   // 색깔 선택 동그라미 테두리를 다시 설정
-  updateColorSelection();
+  updateColorButtonsSelection();
 
   // "짠!" 하고 모달을 보여줍니다. (flex로 바꾸면 화면에 보임)
   editModal.style.display = "flex";

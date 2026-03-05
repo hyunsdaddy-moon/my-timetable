@@ -180,8 +180,9 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 10px 4px;
-  min-height: 80px;
+  padding: 6px 4px;
+  min-height: 55px;
+  /* 세로 길이 조정을 위해 기존 80px에서 약 1/3로 줄임 */
   /* 연한 카드 형태에서 뜨는 효과 */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
   /* 누를 수 있는 효과를 위해 커서를 화살표에서 손가락으로 바꿈 */
