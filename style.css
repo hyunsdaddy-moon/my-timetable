@@ -113,9 +113,7 @@ body {
   padding: 0 5px;
 }
 
-.column-time-header {
-  /* 숫자가 들어갈 공간만큼 비워두는 용도 */
-}
+/* 숫자가 들어갈 공간만큼 비워두는 용도 (현재는 구조만 잡고 특별한 스타일 지정이 없음) */
 
 .day-label {
   font-family: 'Gowun Dodum', sans-serif;
@@ -509,36 +507,58 @@ body {
 }
 
 /* 버튼 둘 (취소 / 저장) 그룹 */
-.modal-buttons {
+/* 모달 하단 버튼 영역을 더 예쁘게 정렬 */
+.modal-actions {
   display: flex;
-  gap: 12px;
-  margin-top: 10px;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
 }
 
-.modal-buttons button {
+.action-btn {
   flex: 1;
-  /* 반반씩 차지하도록 */
-  padding: 16px 0;
-  border-radius: 14px;
+  padding: 10px 5px;
   border: none;
-  font-size: 16px;
-  font-weight: bold;
+  border-radius: 8px;
+  font-family: 'Gowun Dodum', sans-serif;
+  font-size: 15px;
   cursor: pointer;
-  transition: background-color 0.2s, transform 0.1s;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
 }
 
-.modal-buttons button:active {
-  transform: scale(0.96);
-}
-
-.btn-cancel {
-  background-color: #f1f3f8;
-  color: #888;
-}
-
-.btn-save {
-  background: linear-gradient(135deg, #ff6bcb, #f832a8);
-  /* 상단 +버튼처럼 예쁜 핑크 그라데이션 */
+.btn-primary {
+  background-color: var(--primary-color);
   color: white;
-  box-shadow: 0 4px 15px rgba(248, 50, 168, 0.3);
+  font-weight: bold;
+}
+
+.btn-primary:hover {
+  background-color: var(--hover-color);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background-color: #f1f3f5;
+  color: #495057;
+}
+
+.btn-secondary:hover {
+  background-color: #e9ecef;
+  transform: translateY(-2px);
+}
+
+.btn-delete {
+  background-color: #ff6b6b;
+  color: white;
+  flex: 0.5;
+  /* 삭제 버튼은 살짝 작게 */
+}
+
+.btn-delete:hover {
+  background-color: #fa5252;
+  transform: translateY(-2px);
 }

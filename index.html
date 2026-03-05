@@ -87,9 +87,15 @@
           </div>
         </div>
 
-        <div class="modal-buttons">
-          <button type="button" class="btn-cancel" id="btnCancel">취소</button>
-          <button type="button" class="btn-save" id="btnSave">저장하기</button>
+        <div class="modal-actions">
+          <button id="btnDelete" class="action-btn btn-delete"><i class="fa-solid fa-trash-can"></i> 삭제</button>
+          <div style="flex-grow: 1;"></div> <!-- 좌우 간격을 띄우기 위한 빈 공간 -->
+          <button id="btnCopy" class="action-btn btn-secondary"><i class="fa-solid fa-copy"></i> 복사</button>
+          <button id="btnPaste" class="action-btn btn-secondary"><i class="fa-solid fa-paste"></i> 붙여넣기</button>
+        </div>
+        <div class="modal-actions" style="margin-top: 10px;">
+          <button id="btnCancel" class="action-btn btn-secondary">취소</button>
+          <button id="btnSave" class="action-btn btn-primary">저장</button>
         </div>
       </div>
     </div>

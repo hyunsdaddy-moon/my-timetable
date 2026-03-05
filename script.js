@@ -99,72 +99,69 @@ timetableTitleInput.addEventListener('input', (e) => {
 
 // 화면 다시 그리기 함수 (이게 불리면 전체가 새로고침 없이 짠! 바뀝니다)
 function renderTimetable() {
-  timetableArea.innerHTML = "";
+  const tbody = document.getElementById("timetableBody");
+  tbody.innerHTML = "";
 
-  const currentData = tablesData[currentTableIndex];
-  if (!currentData) return;
+  const currentTable = tablesData[currentTableIndex];
+  if (!currentTable) return;
 
   // 제목 텍스트도 현재 시간표 제목으로 변경
-  timetableTitleInput.value = currentData.title || "새 시간표";
+  timetableTitleInput.value = currentTable.title || "새 시간표";
 
-  currentData.schedule.forEach((row, rowIndex) => {
-    if (rowIndex === 4) {
-      const lunchBreak = document.createElement("div");
-      lunchBreak.classList.add("lunch-break");
-      lunchBreak.style.cursor = "pointer"; // 누를 수 있다는 표시
-      const lunchTimeStr = currentData.lunchTime ? `<span style="font-size: 13px; font-weight: normal; margin: 0 8px; color: #df7238; background: #fff; padding: 2px 8px; border-radius: 10px;">${currentData.lunchTime}</span>` : "";
-      lunchBreak.innerHTML = `<i class="fa-solid fa-cookie-bite" style="margin-right:8px;"></i> 맛있는 점심 ${lunchTimeStr} <i class="fa-solid fa-cookie-bite" style="margin-left:8px;"></i>`;
-      lunchBreak.addEventListener("click", () => openTimeModal('lunch'));
-      timetableArea.appendChild(lunchBreak);
-    }
+  for (let p = 0; p < currentTable.schedule[0].length; p++) {
+    const tr = document.createElement("tr");
 
-    const timeRow = document.createElement("div");
-    timeRow.classList.add("time-row");
-    // 실시간으로 변할 때 너무 어지럽지 않게 딜레이 제거 (클라우드 모드 최적화)
-    timeRow.style.animation = "none";
-    timeRow.style.opacity = "1";
-    timeRow.style.transform = "none";
+    const thPeriod = document.createElement("th");
 
-    // "교시 숫자" 및 시간 텍스트 표시
-    const timeLabel = document.createElement("div");
-    timeLabel.classList.add("time-label");
-    timeLabel.innerHTML = `<span>${rowIndex + 1}</span>`;
-
-    const timeText = document.createElement("div");
-    timeText.classList.add("time-text");
-    timeText.innerHTML = currentData.times[rowIndex] ? currentData.times[rowIndex].replace("-", "<br>-<br>").replace("~", "<br>~<br>") : "시간<br>입력";
-    timeLabel.appendChild(timeText);
-
-    timeLabel.addEventListener("click", () => openTimeModal(rowIndex));
-    timeRow.appendChild(timeLabel);
-
-    // 각 교시의 과목 카드 그리기
-    row.forEach((cellData, colIndex) => {
-      const card = document.createElement("div");
-      card.classList.add("subject-card");
-      if (cellData.colorClass) card.classList.add(cellData.colorClass);
-      if (cellData.highlight) card.classList.add("current-class");
-
-      const subjectName = document.createElement("div");
-      subjectName.classList.add("subject-name");
-      subjectName.textContent = cellData.subject;
-      card.appendChild(subjectName);
-
-      if (cellData.teacher) {
-        const teacherName = document.createElement("div");
-        teacherName.classList.add("teacher-name");
-        teacherName.textContent = cellData.teacher;
-        card.appendChild(teacherName);
-      }
-
-      // 카드 누르면 팝업 열기
-      card.addEventListener("click", () => openModal(rowIndex, colIndex, cellData));
-      timeRow.appendChild(card);
+    // 교시 클릭 (시간 설정 모달 호출)
+    thPeriod.innerHTML = `<div class="period-circle">${p + 1}</div><div class="period-time">${currentTable.times[p] || ""}</div>`;
+    thPeriod.style.cursor = "pointer";
+    thPeriod.addEventListener("click", () => {
+      openTimeModal(p);
     });
+    tr.appendChild(thPeriod);
 
-    timetableArea.appendChild(timeRow);
-  });
+    for (let d = 0; d < 5; d++) {
+      const td = document.createElement("td");
+      const cellData = currentTable.schedule[d][p];
+
+      let cellClass = cellData.colorClass || "subject-empty";
+
+      td.innerHTML = `
+        <div class="subject-box ${cellClass}">
+          <div class="subject-name">${cellData.subject}</div>
+          ${cellData.teacher ? `<div class="teacher-name">${cellData.teacher}</div>` : ""}
+        </div>
+      `;
+
+      // 칸을 클릭하면 모달이 열림 (showModal 함수 사용)
+      td.addEventListener("click", () => {
+        showModal(d, p, cellData);
+      });
+
+      tr.appendChild(td);
+    }
+    tbody.appendChild(tr);
+
+    // 점심시간 바 (4교시 후)
+    if (p === 3) {
+      const trLunch = document.createElement("tr");
+      trLunch.classList.add("lunch-row");
+      const tdLunchMode = document.createElement("td");
+      tdLunchMode.colSpan = 6;
+      tdLunchMode.innerHTML = `<span><i class="fa-solid fa-utensils"></i> 맛있는 점심 시간 <span class="lunch-time-text">${currentTable.lunchTime || ""}</span></span>`;
+
+      // 점심시간 바 클릭 (점심시간 설정 모달 호출)
+      tdLunchMode.style.cursor = "pointer";
+      tdLunchMode.addEventListener("click", () => {
+        openLunchTimeModal();
+      });
+      trLunch.appendChild(tdLunchMode);
+      tbody.appendChild(trLunch);
+    }
+  }
 }
+// 이전 버전의 잔재 삭제 완료
 
 // 하단 탭 버튼 그리기 마법!
 function renderTabs() {
@@ -265,62 +262,150 @@ window.addEventListener('storage', (event) => {
 
 // ----------------------------------------------------
 // 🌟 4. 과목 입력 팝업창 제어하기
-// ----------------------------------------------------
-const modal = document.getElementById("editModal");
-const btnCancel = document.getElementById("btnCancel");
-const btnSave = document.getElementById("btnSave");
+// ----------------------------------------------// --- 모달 (과목 입력 팝업) 관련 변수들 ---
+const editModal = document.getElementById("editModal");
 const subjectInput = document.getElementById("subjectInput");
 const teacherInput = document.getElementById("teacherInput");
-const colorButtons = document.querySelectorAll(".color-btn");
+const btnSave = document.getElementById("btnSave");
+const btnCancel = document.getElementById("btnCancel");
+const btnDelete = document.getElementById("btnDelete"); // 새로 추가된 삭제 버튼
+const btnCopy = document.getElementById("btnCopy");     // 새로 추가된 복사 버튼
+const btnPaste = document.getElementById("btnPaste");   // 새로 추가된 붙여넣기 버튼
+const colorOptions = document.querySelectorAll(".color-btn"); // Changed from .color-option to .color-btn based on original
 
-let currentRowIndex = -1;
-let currentColIndex = -1;
-let selectedColorClass = "subject-empty";
+// 모달창이 열렸을 때 "지금 누른 칸"이 정확히 월요일 3교시인지 등 정보를 임시 기억
+let currentEditInfo = {
+  dayIndex: -1,
+  periodIndex: -1
+};
+let selectedColor = "";
 
-function openModal(rowIndex, colIndex, cellData) {
-  currentRowIndex = rowIndex;
-  currentColIndex = colIndex;
-  subjectInput.value = cellData.subject !== "자습" ? cellData.subject : "";
-  teacherInput.value = cellData.teacher;
-  selectedColorClass = cellData.colorClass;
-  updateColorButtonsSelection();
-  modal.classList.remove("hidden");
+// 🌟 복사한 시간표 데이터를 잠시 기억할 마법의 주머니!
+let copiedClassData = null;
+
+// 모달창을 스르륵 열어주는 마법
+function showModal(dayIndex, periodIndex, existingData) {
+  // 모달을 열 때, 지금 누른 요일과 교시를 'currentEditInfo' 변수에 기억해 둡니다.
+  currentEditInfo.dayIndex = dayIndex;
+  currentEditInfo.periodIndex = periodIndex;
+
+  // 만약 붙여넣기 할 내용이 없다면 붙여넣기 버튼을 숨깁니다 (회색 처리).
+  if (copiedClassData === null) {
+    btnPaste.style.opacity = "0.4";
+    btnPaste.style.pointerEvents = "none";
+  } else {
+    btnPaste.style.opacity = "1";
+    btnPaste.style.pointerEvents = "auto";
+  }
+
+  // 만약 이 칸이 원래 비어있던 칸(자습)이라면
+  if (existingData.subject === "자습" && existingData.teacher === "") {
+    subjectInput.value = "";
+    teacherInput.value = "";
+    selectedColor = ""; // Reset color for empty/default
+  } else {
+    // 이미 내용이 있던 칸(예: 국어/김국어)이라면, 팝업창에 그 내용을 미리 띄워줍니다.
+    subjectInput.value = existingData.subject;
+    teacherInput.value = existingData.teacher;
+    selectedColor = existingData.colorClass; // Use colorClass from existingData
+  }
+
+  // 색깔 선택 동그라미 테두리를 다시 설정
+  updateColorSelection();
+
+  // "짠!" 하고 모달을 보여줍니다. (flex로 바꾸면 화면에 보임)
+  editModal.style.display = "flex";
+
+  // 모달이 열리면 자동으로 과목명 입력칸에 커서를 깜빡이게 도와줍니다.
+  subjectInput.focus();
 }
 
+// 모달창을 닫아주는 마법
 function closeModal() {
-  modal.classList.add("hidden");
+  editModal.style.display = "none";
 }
 
-colorButtons.forEach((btn) => {
+function updateColorButtonsSelection() {
+  colorOptions.forEach(btn => btn.classList.remove("selected"));
+  const selectedBtn = document.querySelector(`.color-btn[data-color="${selectedColor}"]`);
+  if (selectedBtn) selectedBtn.classList.add("selected");
+}
+
+colorOptions.forEach((btn) => {
   btn.addEventListener("click", () => {
-    selectedColorClass = btn.getAttribute("data-color");
+    selectedColor = btn.getAttribute("data-color");
     updateColorButtonsSelection();
   });
 });
 
-function updateColorButtonsSelection() {
-  colorButtons.forEach(btn => btn.classList.remove("selected"));
-  const selectedBtn = document.querySelector(`.color-btn[data-color="${selectedColorClass}"]`);
-  if (selectedBtn) selectedBtn.classList.add("selected");
-}
+// ----------------------------------------------------
+// 🌟 새로운 버튼 3. 붙여넣기 기능
+// ----------------------------------------------------
+btnPaste.addEventListener("click", () => {
+  if (copiedClassData) {
+    subjectInput.value = copiedClassData.subject;
+    teacherInput.value = copiedClassData.teacher;
+    selectedColor = copiedClassData.color;
+    updateColorButtonsSelection();
+  }
+});
 
+// ----------------------------------------------------
+// 🌟 새로운 버튼 2. 복사 기능
+// ----------------------------------------------------
+btnCopy.addEventListener("click", () => {
+  copiedClassData = {
+    subject: subjectInput.value.trim(),
+    teacher: teacherInput.value.trim(),
+    color: selectedColor
+  };
+
+  const originalText = btnCopy.innerHTML;
+  btnCopy.innerHTML = `<i class="fa-solid fa-check"></i> 복사됨`;
+  setTimeout(() => {
+    btnCopy.innerHTML = originalText;
+  }, 1000);
+});
+
+// ----------------------------------------------------
+// 🌟 새로운 버튼 1. 삭제 기능
+// ----------------------------------------------------
+btnDelete.addEventListener("click", () => {
+  const d = currentEditInfo.dayIndex;
+  const p = currentEditInfo.periodIndex;
+
+  tablesData[currentTableIndex].schedule[d][p] = {
+    subject: "자습",
+    teacher: "",
+    colorClass: "subject-empty"
+  };
+
+  saveAllData();
+  closeModal();
+});
+
+// 저장 버튼 기능
 btnSave.addEventListener("click", () => {
   const newSubject = subjectInput.value.trim() || "자습";
   const newTeacher = teacherInput.value.trim();
 
-  tablesData[currentTableIndex].schedule[currentRowIndex][currentColIndex] = {
+  const d = currentEditInfo.dayIndex;
+  const p = currentEditInfo.periodIndex;
+
+  tablesData[currentTableIndex].schedule[d][p] = {
     subject: newSubject,
     teacher: newTeacher,
-    colorClass: selectedColorClass,
-    highlight: false
+    colorClass: selectedColor || "subject-empty"
   };
 
-  // 실시간 마법을 부리며 저장합니다!
   saveAllData();
   closeModal();
 });
-btnCancel.addEventListener("click", closeModal);
 
+// 취소 버튼
+btnCancel.addEventListener("click", () => {
+  closeModal();
+});
 
 // ----------------------------------------------------
 // 🌟 5. 교시 시간 입력 팝업창 제어하기
