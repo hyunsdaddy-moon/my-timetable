@@ -351,6 +351,10 @@ btnPaste.addEventListener("click", () => {
     teacherInput.value = copiedClassData.teacher;
     selectedColor = copiedClassData.color;
     updateColorButtonsSelection();
+
+    // 붙여넣기 마법을 부린 다음, 귀찮게 저장 버튼을 따로 누르지 않아도
+    // 곧바로 스스로! 저장 버튼을 투닥! 눌러주고 창을 닫아줍니다. 
+    btnSave.click();
   }
 });
 
