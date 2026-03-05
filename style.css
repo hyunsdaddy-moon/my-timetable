@@ -563,13 +563,14 @@ body {
 
 /* 모달 컨텐츠 크기 확장 및 내부 스크롤 적용 */
 .schedule-modal-content {
-  max-width: 90%;
-  /* 스마트폰 화면에 꽉 차게 가로를 넓힘 */
-  width: 500px;
-  /* 데스크탑에서는 최대 500px 까지만 커지게 */
-  height: 85vh;
-  /* 화면 높이의 85% 차지 (너무 길면 안 되니까!) */
-  padding: 20px 15px;
+  max-width: 95%;
+  /* 화면을 거의 꽉 채우도록 가로 최대치를 넓힘 */
+  width: 95%;
+  /* 가로 폭 95% 사용 */
+  height: 95vh;
+  /* 화면 높이의 95%를 차지하여 위아래로 꽉 차게 */
+  max-height: 95vh;
+  padding: 24px 16px;
   overflow: hidden;
   /* 밖으로 튀어나가는 건 숨기고 */
   display: flex;
@@ -581,10 +582,16 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: १५px;
-  padding-bottom: 10px;
+  margin-bottom: 15px;
+  padding-bottom: 12px;
   border-bottom: 2px dashed #ffe4e1;
   /* 귀여운 핑크색 점선 밑줄 */
+}
+
+.modal-header-flex .modal-title {
+  font-size: 20px;
+  /* 제목 크기를 더 크게 */
+  font-weight: 700;
 }
 
 /* 모달 안에서 내용만 위아래로 스크롤 되도록 설정 */
