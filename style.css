@@ -644,6 +644,8 @@ body {
   padding: 8px 4px;
   border: 1px solid #d1e7fc;
   /* 표 내부 선 (파스텔 블루) */
+  white-space: nowrap;
+  /* 글씨가 세로로 두 줄이 되지 않게 가로로 고정 */
 }
 
 .schedule-table thead th {
@@ -716,4 +718,17 @@ body {
   border: 2px solid #fcf4f8;
   background-color: #fff;
   /* 확대시 뒤에 빈 배경 깔끔하게 처리 */
+}
+
+/* 📱 모바일 화면 최적화 (가로 폭이 좁을 때 표 글자 크기 살짝 축소) */
+@media (max-width: 480px) {
+  .schedule-table {
+    font-size: 15px;
+    /* 모바일에서 표 내용 글꼴 살짝 줄임 */
+  }
+
+  .schedule-table thead th {
+    font-size: 16px;
+    /* 모바일에서 제목 표시줄 글꼴 살짝 줄임 */
+  }
 }
