@@ -532,14 +532,27 @@ body {
 }
 
 .btn-primary {
-  background-color: var(--primary-color);
+  background-color: #ff1c8a;
+  /* 핑크색 확인 버튼 */
   color: white;
   font-weight: bold;
+  font-size: 16px;
+  /* 확인 버튼을 더 크게 */
+  padding: 14px 8px;
+  /* 세로 패딩 증가 */
 }
 
 .btn-primary:hover {
-  background-color: var(--hover-color);
+  background-color: #e6186f;
+  /* 더 진한 핑크색 */
   transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 28, 138, 0.3);
+  /* 그림자 효과 */
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+  /* 눌렀을 때 효과 */
 }
 
 .btn-secondary {
