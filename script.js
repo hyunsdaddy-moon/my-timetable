@@ -2,20 +2,17 @@
 // ☁️ 1. 구글 파이어베이스(Firebase) 도서관 연결 준비!
 // ----------------------------------------------------
 // [선생님 전용 열쇠칸!] 
-// 나중에 선생님만의 완벽한 폰-컴퓨터 연결을 위해 구글 Firebase 가입 후 여기에 주소를 넣으면 진짜 클라우드가 됩니다!
 const firebaseConfig = {
-  // 예시: databaseURL: "https://선생님프로젝트.firebaseio.com"
-  databaseURL: "https://temporary-test-db-for-teacher.firebaseio.com"
+  databaseURL: "https://my-school-timetable-f8cdd-default-rtdb.asia-southeast1.firebasedatabase.app"
 };
 
-// 파이어베이스 연결 시도는 잠시 안전하게 꺼두고(Try-Catch), 
-// 대신 컴퓨터 창 2개를 띄웠을 때 완벽하게 똑같이 실시간 마법이 일어하는 코드를 핵심으로 적용할게요!
+// 파이어베이스에 진짜로 연결을 시도하는 마법!
 let db;
 try {
   firebase.initializeApp(firebaseConfig);
   db = firebase.database();
 } catch (e) {
-  console.log("☁️ 아직 진짜 클라우드 주소가 없어서, 마법의 실시간 동기화 모드로 작동합니다!");
+  console.log("☁️ 실시간 동기화 모드로 작동합니다!");
 }
 
 
@@ -35,24 +32,54 @@ function getEmptySchedule() {
   return empty;
 }
 
-// 여러 개의 시간표를 저장할 큰 서랍장!
 let tablesData = [];
-// 현재 보고 있는 시간표가 몇 번째(순서)인지 기억하기 (0 = 첫 번째)
 let currentTableIndex = 0;
 
-// 임시 저장소에서 꺼내오기
-const savedData = localStorage.getItem("myAllTimetableData");
-if (savedData) {
-  tablesData = JSON.parse(savedData);
-} else {
-  // 처음 켰을 때는 '1학기 🏫' 라는 기본 시간표 한 개를 만들어줍시다.
-  tablesData.push({
-    id: Date.now(), // 겹치지 않는 고유 번호
-    title: "1학기 🏫",
-    schedule: getEmptySchedule(),
-    times: ["", "", "", "", "", "", "", ""],
-    lunchTime: ""
+// 파이어베이스(클라우드)에서 실시간으로 데이터 감시하기!
+if (db) {
+  const timetableRef = db.ref('teacher_timetable');
+
+  // 누군가(폰이나 컴퓨터) 데이터를 바꾸면 이 마법이 즉시 실행됩니다!
+  timetableRef.on('value', (snapshot) => {
+    const data = snapshot.val();
+    if (data && data.tables) {
+      // 클라우드에서 최신 시간표 정보를 가져와서 내 서랍장에 넣습니다.
+      tablesData = data.tables;
+
+      // 혹시 폰에서 탭을 삭제해서 지금 보고 있는 탭 번호가 안 맞으면 첫 탭으로 이동
+      if (currentTableIndex >= tablesData.length) currentTableIndex = 0;
+
+      // 화면 짠! 하고 다시 그리기
+      renderTimetable();
+      renderTabs();
+    } else {
+      // 만약 클라우드가 텅텅 비어있다면(처음 사용하는 거라면) 기본 시간표를 만들어줍니다.
+      if (tablesData.length === 0) {
+        tablesData.push({
+          id: Date.now(),
+          title: "1학기 🏫",
+          schedule: getEmptySchedule(),
+          times: ["", "", "", "", "", "", "", ""],
+          lunchTime: ""
+        });
+        saveAllData(); // 만든 걸 클라우드에 올려서 채워주기
+      }
+    }
   });
+} else {
+  // 클라우드 연결이 안 되었을 때 (혹시 모를 대비책)
+  const savedData = localStorage.getItem("myAllTimetableData");
+  if (savedData) {
+    tablesData = JSON.parse(savedData);
+  } else {
+    tablesData.push({
+      id: Date.now(),
+      title: "1학기 🏫",
+      schedule: getEmptySchedule(),
+      times: ["", "", "", "", "", "", "", ""],
+      lunchTime: ""
+    });
+  }
 }
 
 
