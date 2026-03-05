@@ -1,0 +1,544 @@
+/* 전체 기본 설정: 폰트, 여백 등 초기화 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Gowun Dodum', 'Nanum Pen Script', sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  /* 모바일 터치 시 파란색 깜빡임 제거 */
+}
+
+/* 폰트 및 바디: 도트 무늬 배경 설정 */
+body {
+  background-color: #fcf4f8;
+  /* 아주 연한 핑크색 바탕 */
+  /* 귀여운 핑크색 미세한 도트 무늬 패턴 (다이어리 속지 느낌) */
+  background-image: radial-gradient(#fcdae8 1.5px, transparent 1px);
+  background-size: 20px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  /* 모바일에서 글자가 너무 작게 나오지 않도록 */
+  text-size-adjust: 100%;
+}
+
+/* 모바일 화면처럼 앱 크기 제한 (가운데 정렬) */
+.app-container {
+  width: 100%;
+  max-width: 480px;
+  height: 100vh;
+  min-height: 800px;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 1. 상단 타이틀 영역 */
+.top-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  /* 제목이 약간 아래쪽으로 가도록 */
+  padding: 30px 24px 20px 24px;
+}
+
+.title-area {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+  /* 부모 요소부터 화면을 꽉 채우도록 설정 */
+}
+
+.sub-title {
+  color: #ff4785;
+  /* 진한 핑크색 작은 글씨 */
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* 제목을 직접 칠 수 있는 귀여운 입력창 스타일 추가 */
+.input-title {
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  color: #ff4785;
+  font-size: 16px;
+  font-weight: bold;
+  outline: none;
+  width: 100%;
+  /* 빨간 상자 크기만큼 꽉 채웁니다! */
+  padding: 0;
+  margin-bottom: 2px;
+}
+
+.input-title:focus {
+  border-bottom: 2px dashed #ffa3cb;
+}
+
+.main-title {
+  font-family: 'Nanum Pen Script', cursive;
+  /* 손글씨 느낌 폰트 강조 */
+  font-size: 32px;
+  color: #333333;
+  margin-top: -5px;
+}
+
+/* 2. 메인 시간표 영역 (스크롤 가능하게) */
+.timetable-main {
+  flex: 1;
+  /* 남은 공간 모두 차지 */
+  overflow-y: auto;
+  /* 내용이 길면 아래위로 스크롤! */
+  padding: 0 16px;
+  padding-bottom: 90px;
+  /* 맨 밑에 둥근 탭 바에 가리지 않도록 */
+}
+
+/* 스크롤바 숨기기 (깔끔함을 위해) */
+.timetable-main::-webkit-scrollbar {
+  display: none;
+}
+
+/* 요일 (월~금) 헤더 부분 */
+.days-header {
+  display: grid;
+  grid-template-columns: 48px repeat(5, 1fr);
+  /* 왼쪽 교시 숫자/시간 칸(48) + 5개 요일 */
+  gap: 10px;
+  margin-bottom: 12px;
+  padding: 0 5px;
+}
+
+.column-time-header {
+  /* 숫자가 들어갈 공간만큼 비워두는 용도 */
+}
+
+.day-label {
+  font-family: 'Gowun Dodum', sans-serif;
+  text-align: center;
+  font-weight: 600;
+  color: #3f4350;
+  font-size: 16px;
+}
+
+/* 교시 단위의 각 행 (1교시 묶음, 2교시 묶음...) */
+.time-row {
+  display: grid;
+  grid-template-columns: 48px repeat(5, 1fr);
+  gap: 10px;
+  align-items: stretch;
+  /* 카드 높이 맞추기 */
+  margin-bottom: 10px;
+  /* 다음 교시와의 간격 */
+  /* 각 줄이 살짝 미끄러져 들어오는 귀여운 애니메이션 효과용 */
+  animation: slideUp 0.5s ease forwards;
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+/* 애니메이션 설정: 1~8교시가 순서대로 탁탁탁 나타나도록 딜레이 조정 (JS에서 할당할 수도 있음) */
+@keyframes slideUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 교시 나타내는 예쁜 분홍색 숫자와 시간 */
+.time-label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #ff1c8a;
+  font-family: 'Nanum Pen Script', cursive;
+  font-size: 24px;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.time-label:active {
+  transform: scale(0.9);
+}
+
+.time-text {
+  font-family: 'Gowun Dodum', sans-serif;
+  font-size: 9px;
+  color: #a1a1a1;
+  text-align: center;
+  margin-top: 2px;
+  line-height: 1.2;
+}
+
+/* 각 과목별 사각형 카드 */
+.subject-card {
+  border-radius: 12px;
+  /* 디자인처럼 부드럽게 둥글게! */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 4px;
+  min-height: 80px;
+  /* 연한 카드 형태에서 뜨는 효과 */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+  /* 누를 수 있는 효과를 위해 커서를 화살표에서 손가락으로 바꿈 */
+  cursor: pointer;
+  transition: transform 0.1s, filter 0.2s;
+}
+
+/* 마우스 올리면 살짝 위로 떠오르는 효과 */
+.subject-card:hover {
+  transform: translateY(-2px);
+  filter: brightness(0.95);
+}
+
+/* 눌렀을 때 꾹 들어가는 예쁜 터치 효과 */
+.subject-card:active {
+  transform: scale(0.95);
+}
+
+
+/* 과목명 글씨 */
+.subject-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2b2b2b;
+  margin-bottom: 6px;
+  /* 선생님 이름과의 간격 */
+  text-align: center;
+  word-break: keep-all;
+  /* 긴 과목명이 예쁘게 줄바꿈 되도록 */
+}
+
+/* 선생님 이름 글씨 (작고 회색) */
+.teacher-name {
+  font-size: 11px;
+  color: #8c8c8c;
+  text-align: center;
+}
+
+/* 디자인의 파스텔 톤 색상들! */
+.color-skyblue {
+  background-color: #d1e7fc;
+  border: none;
+}
+
+.color-pink {
+  background-color: #ffdce5;
+  border: none;
+}
+
+.color-green {
+  background-color: #c8fad3;
+  border: none;
+}
+
+.color-yellow {
+  background-color: #fdf5c7;
+  border: none;
+}
+
+.color-purple {
+  background-color: #e4dbfb;
+  border: none;
+}
+
+.color-orange {
+  background-color: #fde2ca;
+  border: none;
+}
+
+/* 자습/빈 칸 (흰색 배경에 테두리 점선 처리) */
+.subject-empty {
+  background-color: #ffffff;
+  border: 2px dashed #d5dbe5;
+  /* 연회색 점선 */
+  box-shadow: none;
+  /* 빈 칸은 그림자 없음 */
+}
+
+.subject-empty .subject-name {
+  color: #bcbcbc;
+  /* 회색으로 연하게 처리 */
+  font-weight: 500;
+}
+
+/* 현재 진행 중인 수업 강조 화면 (매우 두꺼운 핑크색 테두리!) */
+.current-class {
+  border: 4px solid #ff1c8a !important;
+  box-sizing: border-box;
+  /* 크기가 옆에 튀어나가지 않게 조절 */
+}
+
+/* 점심 시간 바 */
+.lunch-break {
+  margin: 10px 0 10px 0;
+  /* 위아래 여백을 줘서 4-5교시 사이에 들어가는 것처럼 보이게 */
+  border: 2px dashed #f6ba81;
+  /* 오렌지색 점선 바 */
+  border-radius: 20px;
+  background-color: #fff9f4;
+  /* 배부른 상아색 */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0;
+  color: #df7238;
+  /* 글씨도 짙은 오렌지느낌 */
+  font-size: 15px;
+  font-weight: bold;
+  opacity: 0;
+  animation: slideUp 0.5s ease forwards;
+  animation-delay: 0.3s;
+  /* 살짝 늦게 나타나게 */
+}
+
+
+/* 3. 예쁜 하단 네비게이션 탭 바 (스크롤 가능하게 수정) */
+.bottom-nav {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  border-top-left-radius: 40px;
+  border-top-right-radius: 40px;
+  height: 85px;
+  display: flex;
+  justify-content: flex-start;
+  /* 탭이 많아질 수 있으니 왼쪽 정렬로 변경 */
+  align-items: center;
+  padding: 0 20px 10px 20px;
+  box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.04);
+  gap: 15px;
+  /* 탭 간격 띄우기 */
+}
+
+/* 탭 바를 좌우로 드래그(스크롤)할 수 있는 속성 */
+.tabs-scroll-container {
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  /* 폰에서 부드러운 스크롤 */
+}
+
+/* 탭 바 스크롤바 숨기기 */
+.tabs-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+.nav-item {
+  background: none;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: #aeb5c0;
+  padding: 8px 12px;
+  position: relative;
+  cursor: pointer;
+  min-width: 60px;
+  /* 탭이 너무 찌그러지지 않게 최소 너비 설정 */
+}
+
+.nav-item i {
+  font-size: 22px;
+}
+
+.nav-item span {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* 현재 보고 있는 탭(시간표 탭)을 위한 분홍색 동그라미 스위치! */
+.nav-item.active {
+  color: #ff1c8a;
+  /* 분홍색 글씨 */
+}
+
+.nav-item.active .active-bg {
+  /* 분홍색 동그라미 안에 하얀 아이콘 */
+  background-color: #ffdce5;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  position: absolute;
+  top: -6px;
+  /* 위로 살짝 올라가 있게! */
+  z-index: -1;
+}
+
+.nav-item.active i {
+  /* 아이콘 색상을 핑크핑크하게 */
+  color: #ff1c8a;
+  margin-top: 4px;
+  /* 배경 중앙에 오도록 맞춤 */
+}
+
+
+/* 🌟 모달(팝업) 애니메이션 만들기 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes popUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* 새로 추가된 모달 팝업 스타일 */
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* 어두운 배경, 글래스모피즘(흐림처리) 효과 */
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(3px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  /* 화면의 맨 앞으로! */
+  animation: fadeIn 0.2s ease;
+  padding: 20px;
+}
+
+/* 자바스크립트에서 이 클래스가 있으면 모달이 사라집니다 */
+.modal-overlay.hidden {
+  display: none !important;
+}
+
+.modal-content {
+  background-color: #ffffff;
+  width: 100%;
+  max-width: 340px;
+  border-radius: 24px;
+  /* 예쁘게 다이어리 쪽지처럼 둥글게 */
+  padding: 30px 24px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  /* 띠용! 하고 나타남 */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.modal-title {
+  text-align: center;
+  color: #333;
+  font-size: 22px;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+/* 폼 입력창 스타일 */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-group label {
+  font-size: 14px;
+  font-weight: bold;
+  color: #666;
+  margin-left: 4px;
+}
+
+.input-group input {
+  padding: 14px 16px;
+  border: 2px solid #f1f3f8;
+  border-radius: 12px;
+  font-size: 16px;
+  outline: none;
+  background-color: #f9fafc;
+  transition: border-color 0.2s;
+  color: #333;
+}
+
+.input-group input:focus {
+  border-color: #ffa3cb;
+  /* 입력할 땐 핑크색 테두리로! */
+  background-color: #ffffff;
+}
+
+/* 동그란 색상 선택기 박스 */
+.color-picker {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+}
+
+/* 색상 버튼 하나하나 */
+.color-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.1s, border 0.1s;
+}
+
+/* 내가 선택한 색을 두꺼운 회색 테두리로 표시해줘요! */
+.color-btn.selected {
+  transform: scale(1.15);
+  /* 살짝 커짐 */
+  box-shadow: 0 0 0 3px #ffffff, 0 0 0 6px #ffa3cb;
+  /* 선택된 건 핑크색 겹테두리 효과! */
+}
+
+/* 버튼 둘 (취소 / 저장) 그룹 */
+.modal-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.modal-buttons button {
+  flex: 1;
+  /* 반반씩 차지하도록 */
+  padding: 16px 0;
+  border-radius: 14px;
+  border: none;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.modal-buttons button:active {
+  transform: scale(0.96);
+}
+
+.btn-cancel {
+  background-color: #f1f3f8;
+  color: #888;
+}
+
+.btn-save {
+  background: linear-gradient(135deg, #ff6bcb, #f832a8);
+  /* 상단 +버튼처럼 예쁜 핑크 그라데이션 */
+  color: white;
+  box-shadow: 0 4px 15px rgba(248, 50, 168, 0.3);
+}

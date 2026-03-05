@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>나의 시간표</title>
+  <!-- 폰트 적용 (나눔펜 스크립트처럼 귀여운 손글씨 폰트나 둥근 고딕 느낌) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Pen+Script&family=Gowun+Dodum&display=swap"
+    rel="stylesheet">
+  <!-- 아이콘 사용을 위한 FontAwesome (별표, 집, 달력, 체크 등) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <!-- 앱 전체 래퍼 (모바일 화면처럼 중앙 정렬 및 너비 제한용) -->
+  <div class="app-container">
+
+    <!-- 1. 상단 타이틀 영역 -->
+    <header class="top-header">
+      <div class="title-area">
+        <!-- 텍스트 대신 input으로 변경하여 직접 수정할 수 있게 만듭니다 -->
+        <input type="text" class="input-title font-cute" id="timetableTitle" value="1학기 🏫" maxlength="50">
+        <h1 class="main-title">나의 시간표 ✨</h1>
+      </div>
+    </header>
+
+    <!-- 2. 시간표 메인 콘텐츠 영역 -->
+    <main class="timetable-main">
+
+      <!-- 요일 헤더 -->
+      <div class="days-header">
+        <div class="column-time-header"></div> <!-- 왼쪽 빈 공간 -->
+        <div class="day-label">월</div>
+        <div class="day-label">화</div>
+        <div class="day-label">수</div>
+        <div class="day-label">목</div>
+        <div class="day-label">금</div>
+      </div>
+
+      <!-- 리스트 방식의 시간표 구조 (각 교시별 행) -->
+      <div class="timetable-content" id="timetableArea">
+        <!-- 자바스크립트가 데이터를 불러와서 여기에 칸들을 슝슝 채워 넣을 거예요! -->
+      </div>
+
+    </main>
+
+    <!-- 🍎 팝업창 (시간표 정보 입력용, 처음엔 숨겨져 있어요) -->
+    <div id="editModal" class="modal-overlay hidden">
+      <div class="modal-content">
+        <h2 class="modal-title">나의 시간표 만들기 ✏️</h2>
+
+        <div class="input-group">
+          <label for="subjectInput">어떤 과목인가요?</label>
+          <input type="text" id="subjectInput" placeholder="예: 수학, 게임, 낮잠">
+        </div>
+
+        <div class="input-group">
+          <label for="teacherInput">선생님 성함 (선택)</label>
+          <input type="text" id="teacherInput" placeholder="예: 이선생님">
+        </div>
+
+        <div class="input-group">
+          <label>어떤 예쁜 색상을 입힐까요?</label>
+          <div class="color-picker" id="colorPicker">
+            <!-- 자습/빈칸 버튼 (회색 점선) -->
+            <button type="button" class="color-btn subject-empty" data-color="subject-empty"
+              aria-label="빈 칸(자습)"></button>
+            <button type="button" class="color-btn color-skyblue" data-color="color-skyblue"
+              aria-label="파스텔 블루"></button>
+            <button type="button" class="color-btn color-pink" data-color="color-pink" aria-label="핑크"></button>
+            <button type="button" class="color-btn color-green" data-color="color-green" aria-label="그린"></button>
+            <button type="button" class="color-btn color-yellow" data-color="color-yellow" aria-label="옐로우"></button>
+            <button type="button" class="color-btn color-purple" data-color="color-purple" aria-label="보라"></button>
+            <button type="button" class="color-btn color-orange" data-color="color-orange" aria-label="오렌지"></button>
+          </div>
+        </div>
+
+        <div class="modal-buttons">
+          <button type="button" class="btn-cancel" id="btnCancel">취소</button>
+          <button type="button" class="btn-save" id="btnSave">저장하기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ⏰ 팝업창 (몇 시부터 몇 시인지 시간 입력용) -->
+    <div id="timeModal" class="modal-overlay hidden">
+      <div class="modal-content">
+        <h2 class="modal-title" id="timeModalTitle">1교시 시간 ⏰</h2>
+
+        <div class="input-group">
+          <label for="timeInput">수업 시간을 적어주세요</label>
+          <input type="text" id="timeInput" placeholder="예: 09:00 - 09:50">
+        </div>
+
+        <div class="modal-buttons">
+          <button type="button" class="btn-cancel" id="btnTimeCancel">취소</button>
+          <button type="button" class="btn-save" id="btnTimeSave">저장하기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. 하단 네비게이션 (시간표 목록 탭으로 변경) -->
+    <!-- 스크립트에서 시간표 개수만큼 탭과 + 버튼을 자동으로 만들어 줄 거예요! -->
+    <nav class="bottom-nav tabs-scroll-container" id="tabsArea">
+    </nav>
+
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+  <script src="script.js"></script>
+</body>
+
+</html>
