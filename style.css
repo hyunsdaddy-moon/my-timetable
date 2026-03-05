@@ -165,7 +165,8 @@ body {
 
 .time-text {
   font-family: 'Gowun Dodum', sans-serif;
-  font-size: 9px;
+  font-size: 13px;
+  /* 교시별 시간 폰트 크기 증가 (9px → 13px) */
   color: #a1a1a1;
   text-align: center;
   margin-top: 2px;
