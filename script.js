@@ -317,8 +317,8 @@ function showModal(dayIndex, periodIndex, existingData) {
   // 색깔 선택 동그라미 테두리를 다시 설정
   updateColorButtonsSelection();
 
-  // "짠!" 하고 모달을 보여줍니다. (flex로 바꾸면 화면에 보임)
-  editModal.style.display = "flex";
+  // "짠!" 하고 모달을 보여줍니다. (hidden 클래스 제거)
+  editModal.classList.remove("hidden");
 
   // 모달이 열리면 자동으로 과목명 입력칸에 커서를 깜빡이게 도와줍니다.
   subjectInput.focus();
@@ -326,7 +326,7 @@ function showModal(dayIndex, periodIndex, existingData) {
 
 // 모달창을 닫아주는 마법
 function closeModal() {
-  editModal.style.display = "none";
+  editModal.classList.add("hidden");
 }
 
 function updateColorButtonsSelection() {
