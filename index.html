@@ -34,6 +34,9 @@
         <input type="text" class="input-title font-cute" id="timetableTitle" value="1학기 🏫" maxlength="50">
         <h1 class="main-title">나의 시간표 ✨</h1>
       </div>
+      <button class="action-btn btn-secondary font-cute" id="schedule-btn"
+        style="margin-left:auto; padding: 5px 10px; font-size: 1.1rem;"><i class="fa-regular fa-calendar-check"></i>
+        학사일정</button>
     </header>
 
     <!-- 2. 시간표 메인 콘텐츠 영역 -->
@@ -121,6 +124,141 @@
     <!-- 스크립트에서 시간표 개수만큼 탭과 + 버튼을 자동으로 만들어 줄 거예요! -->
     <nav class="bottom-nav tabs-scroll-container" id="tabsArea">
     </nav>
+
+    <!-- 🗓️ 일과 시간표 & 학사일정 팝업창 -->
+    <div id="scheduleModal" class="modal-overlay hidden">
+      <div class="modal-content schedule-modal-content">
+        <div class="modal-header-flex">
+          <h2 class="modal-title" style="margin-bottom: 0;">2026학년도 일과 시간표(중등) 🏫</h2>
+          <button type="button" class="close-schedule-btn" id="btnCloseSchedule"><i
+              class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="schedule-scroll-area">
+          <!-- 일과 시간표 표 영역 -->
+          <table class="schedule-table font-cute">
+            <thead>
+              <tr>
+                <th colspan="2">월~목</th>
+                <th colspan="2">금</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="bold">조례</td>
+                <td>08:00~08:15</td>
+                <td class="bold">조례</td>
+                <td>08:00~08:15</td>
+              </tr>
+              <tr>
+                <td class="bold">1교시</td>
+                <td>08:30~09:15</td>
+                <td class="bold">1교시</td>
+                <td>08:30~09:15</td>
+              </tr>
+              <tr>
+                <td class="bold">2교시</td>
+                <td>09:25~10:10</td>
+                <td class="bold">2교시</td>
+                <td>09:25~10:10</td>
+              </tr>
+              <tr class="break-time">
+                <td class="bold">중간휴식</td>
+                <td>20분</td>
+                <td class="bold">중간휴식</td>
+                <td>15분</td>
+              </tr>
+              <tr>
+                <td class="bold">3교시</td>
+                <td>10:30~11:15</td>
+                <td class="bold">3교시</td>
+                <td>10:25~11:10</td>
+              </tr>
+              <tr>
+                <td class="bold">4교시</td>
+                <td>11:25~12:10</td>
+                <td class="bold">4교시</td>
+                <td>11:20~12:05</td>
+              </tr>
+              <tr class="break-time">
+                <td class="bold">점심시간</td>
+                <td>12:10~13:10</td>
+                <td class="bold">점심시간</td>
+                <td>12:05~13:05</td>
+              </tr>
+              <tr>
+                <td class="bold">5교시</td>
+                <td>13:10~13:55</td>
+                <td class="bold">5교시</td>
+                <td>13:05~13:50</td>
+              </tr>
+              <tr>
+                <td class="bold">6교시</td>
+                <td>14:05~14:50</td>
+                <td class="bold">6교시</td>
+                <td>14:00~14:45</td>
+              </tr>
+              <tr>
+                <td class="bold">7교시</td>
+                <td>15:00~15:45</td>
+                <td class="bold">종례 및 이동</td>
+                <td>14:45~14:55</td>
+              </tr>
+              <tr>
+                <td class="bold">종례 및 이동</td>
+                <td>15:45~16:00</td>
+                <td class="bold">7교시</td>
+                <td>14:55~15:40</td>
+              </tr>
+              <tr class="bus-time">
+                <td class="bold" rowspan="2">하교버스</td>
+                <td rowspan="2">16:00</td>
+                <td class="bold">8교시</td>
+                <td>15:45~16:30</td>
+              </tr>
+              <tr class="bus-time">
+                <td class="bold">하교버스</td>
+                <td>16:50</td>
+              </tr>
+              <tr>
+                <td class="bold">방과후 학교</td>
+                <td>16:00~17:40</td>
+                <td class="bold">자기주도학습</td>
+                <td>16:50~17:40</td>
+              </tr>
+              <tr class="dinner-time">
+                <td class="bold">저녁시간</td>
+                <td>17:40~18:30</td>
+                <td class="bold">저녁시간</td>
+                <td>17:40~18:30</td>
+              </tr>
+              <tr>
+                <td class="bold">자기주도학습</td>
+                <td>18:30~20:30</td>
+                <td class="bold">자기주도학습</td>
+                <td>18:30~20:30</td>
+              </tr>
+              <tr class="bus-time">
+                <td class="bold">학교버스</td>
+                <td>20:40</td>
+                <td class="bold">하교버스</td>
+                <td>20:40</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="calendar-images">
+            <h3 class="calendar-title font-cute" style="margin-top: 20px;">🗓️ 학사일정 (1학기)</h3>
+            <img src="images/cal1.png" alt="학사일정 1월~8월" class="cal-img"
+              onerror="this.src='https://placehold.co/600x800/FFE4E1/FF69B4?text=cal1.png+%E2%86%91+Upload';">
+
+            <h3 class="calendar-title font-cute" style="margin-top: 20px;">🗓️ 학사일정 (2학기)</h3>
+            <img src="images/cal2.png" alt="학사일정 9월~2월" class="cal-img"
+              onerror="this.src='https://placehold.co/600x800/E6E6FA/9370DB?text=cal2.png+%E2%86%91+Upload';">
+          </div>
+        </div>
+      </div>
+    </div>
 
   </div>
 

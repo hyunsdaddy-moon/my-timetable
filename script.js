@@ -459,3 +459,34 @@ btnTimeCancel.addEventListener("click", closeTimeModal);
 // 🎉 모든 준비가 끝났으니 시작할 때 한 번 화면을 그립니다!
 renderTabs(); // 탭도 처음부터 그려줘야 나오죠!
 renderTimetable();
+
+// ----------------------------------------------------
+// 🌟 6. 일과 시간표 및 학사일정 팝업 제어
+// ----------------------------------------------------
+const scheduleBtn = document.getElementById("schedule-btn");
+const scheduleModal = document.getElementById("scheduleModal");
+const btnCloseSchedule = document.getElementById("btnCloseSchedule");
+
+// 상단 버튼을 누르면 팝업창 나타나기!
+if (scheduleBtn && scheduleModal) {
+  scheduleBtn.addEventListener("click", () => {
+    scheduleModal.classList.remove("hidden");
+  });
+}
+
+// X 버튼을 누르면 팝업창 숨기기!
+if (btnCloseSchedule && scheduleModal) {
+  btnCloseSchedule.addEventListener("click", () => {
+    scheduleModal.classList.add("hidden");
+  });
+}
+
+// 팝업창 바깥의 어두운 배경을 눌러도 닫히게 하는 마법
+if (scheduleModal) {
+  scheduleModal.addEventListener("click", (event) => {
+    // 클릭한 곳이 정확히 '어두운 배경(modal-overlay)'일 때만 닫기
+    if (event.target === scheduleModal) {
+      scheduleModal.classList.add("hidden");
+    }
+  });
+}
