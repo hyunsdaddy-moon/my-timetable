@@ -490,3 +490,30 @@ if (scheduleModal) {
     }
   });
 }
+
+// ----------------------------------------------------
+// 🌟 7. 학사일정 이미지 줌인/줌아웃 (Panzoom) 마법 적용
+// ----------------------------------------------------
+const calImg1 = document.getElementById('calImg1');
+const calImg2 = document.getElementById('calImg2');
+
+// 공통 Panzoom 설정 (최대 4배까지 확대 가능, 부드러운 움직임)
+const panzoomOptions = {
+  maxScale: 4,
+  minScale: 1,
+  contain: 'outside', // 이미지가 상자 밖으로 무리하게 드래그 안 되게 막음
+};
+
+if (calImg1 && typeof Panzoom !== 'undefined') {
+  const pz1 = Panzoom(calImg1, panzoomOptions);
+
+  // 컴퓨터 마우스 휠로 확대/축소 지원
+  calImg1.parentElement.addEventListener('wheel', pz1.zoomWithWheel);
+}
+
+if (calImg2 && typeof Panzoom !== 'undefined') {
+  const pz2 = Panzoom(calImg2, panzoomOptions);
+
+  // 컴퓨터 마우스 휠로 확대/축소 지원
+  calImg2.parentElement.addEventListener('wheel', pz2.zoomWithWheel);
+}

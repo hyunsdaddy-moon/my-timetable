@@ -21,6 +21,9 @@
   <!-- 아이콘 사용을 위한 FontAwesome (별표, 집, 달력, 체크 등) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
+
+  <!-- 🔍 학사일정 이미지 줌인/줌아웃을 위한 Panzoom 마법 도구 -->
+  <script src="https://unpkg.com/@panzoom/panzoom@4.5.1/dist/panzoom.min.js"></script>
 </head>
 
 <body>
@@ -249,12 +252,16 @@
 
           <div class="calendar-images">
             <h3 class="calendar-title font-cute" style="margin-top: 20px;">🗓️ 학사일정 (1학기)</h3>
-            <img src="images/cal1.png" alt="학사일정 1월~8월" class="cal-img"
-              onerror="this.src='https://placehold.co/600x800/FFE4E1/FF69B4?text=cal1.png+%E2%86%91+Upload';">
+            <div class="zoom-container">
+              <img src="images/cal1.png" alt="학사일정 1월~8월" class="cal-img" id="calImg1"
+                onerror="this.src='https://placehold.co/600x800/FFE4E1/FF69B4?text=cal1.png+%E2%86%91+Upload';">
+            </div>
 
             <h3 class="calendar-title font-cute" style="margin-top: 20px;">🗓️ 학사일정 (2학기)</h3>
-            <img src="images/cal2.png" alt="학사일정 9월~2월" class="cal-img"
-              onerror="this.src='https://placehold.co/600x800/E6E6FA/9370DB?text=cal2.png+%E2%86%91+Upload';">
+            <div class="zoom-container">
+              <img src="images/cal2.png" alt="학사일정 9월~2월" class="cal-img" id="calImg2"
+                onerror="this.src='https://placehold.co/600x800/E6E6FA/9370DB?text=cal2.png+%E2%86%91+Upload';">
+            </div>
           </div>
         </div>
       </div>
