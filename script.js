@@ -178,8 +178,9 @@ function renderTimetable() {
     // 요일별 시간 텍스트 표시 (가장 많이 사용되는 시간 표시 - 월~목)
     const timeText = document.createElement("div");
     timeText.classList.add("time-text");
-    const mondayTime = currentData.times && currentData.times[0] && currentData.times[0][rowIndex] ? currentData.times[0][rowIndex] : "시간<br>입력";
-    timeText.innerHTML = mondayTime.replace("-", "<br>-<br>").replace("~", "<br>~<br>");
+    const mondayTime = currentData.times && currentData.times[0] && currentData.times[0][rowIndex] ? currentData.times[0][rowIndex] : "시간입력";
+    // 시간을 줄바꿈 없이 그대로 표시
+    timeText.textContent = mondayTime;
     timeLabel.appendChild(timeText);
 
     timeLabel.addEventListener("click", () => openTimeModal(rowIndex));
