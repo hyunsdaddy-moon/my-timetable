@@ -46,6 +46,22 @@ if (db) {
       // 클라우드에서 최신 시간표 정보를 가져와서 내 서랍장에 넣습니다.
       tablesData = data.tables;
 
+      // 기존 데이터 호환성 처리 (기존 단일 배열을 요일별 배열로 변환)
+      tablesData.forEach(table => {
+        if (table.times && !Array.isArray(table.times[0])) {
+          // 기존 형식: ["시간1", "시간2", ...]
+          // 새 형식으로 변환: [["시간1", ...], ["시간1", ...], ...]
+          const oldTimes = table.times;
+          table.times = [
+            oldTimes, // 월
+            oldTimes, // 화
+            oldTimes, // 수
+            oldTimes, // 목
+            oldTimes  // 금
+          ];
+        }
+      });
+
       // 혹시 폰에서 탭을 삭제해서 지금 보고 있는 탭 번호가 안 맞으면 첫 탭으로 이동
       if (currentTableIndex >= tablesData.length) currentTableIndex = 0;
 
@@ -59,7 +75,14 @@ if (db) {
           id: Date.now(),
           title: "1학기 🏫",
           schedule: getEmptySchedule(),
-          times: ["", "", "", "", "", "", "", ""],
+          // 요일별 시간 (0:월, 1:화, 2:수, 3:목, 4:금)
+          times: [
+            ["08:30~09:15", "09:25~10:10", "10:30~11:15", "11:25~12:10", "13:10~13:55", "14:05~14:50", "15:00~15:45", ""], // 월
+            ["08:30~09:15", "09:25~10:10", "10:30~11:15", "11:25~12:10", "13:10~13:55", "14:05~14:50", "15:00~15:45", ""], // 화
+            ["08:30~09:15", "09:25~10:10", "10:30~11:15", "11:25~12:10", "13:10~13:55", "14:05~14:50", "15:00~15:45", ""], // 수
+            ["08:30~09:15", "09:25~10:10", "10:30~11:15", "11:25~12:10", "13:10~13:55", "14:05~14:50", "15:00~15:45", ""], // 목
+            ["08:30~09:15", "09:25~10:10", "10:25~11:10", "11:20~12:05", "13:05~13:50", "14:00~14:45", "14:55~15:40", "15:45~16:30"]  // 금
+          ],
           lunchTime: ""
         });
         saveAllData(); // 만든 걸 클라우드에 올려서 채워주기
@@ -71,12 +94,33 @@ if (db) {
   const savedData = localStorage.getItem("myAllTimetableData");
   if (savedData) {
     tablesData = JSON.parse(savedData);
+
+    // 기존 데이터 호환성 처리
+    tablesData.forEach(table => {
+      if (table.times && !Array.isArray(table.times[0])) {
+        const oldTimes = table.times;
+        table.times = [
+          oldTimes, // 월
+          oldTimes, // 화
+          oldTimes, // 수
+          oldTimes, // 목
+          oldTimes  // 금
+        ];
+      }
+    });
   } else {
     tablesData.push({
       id: Date.now(),
       title: "1학기 🏫",
       schedule: getEmptySchedule(),
-      times: ["", "", "", "", "", "", "", ""],
+      // 요일별 시간 (0:월, 1:화, 2:수, 3:목, 4:금)
+      times: [
+        ["08:30~09:15", "09:25~10:10", "10:30~11:15", "11:25~12:10", "13:10~13:55", "14:05~14:50", "15:00~15:45", ""], // 월
+        ["08:30~09:15", "09:25~10:10", "10:30~11:15", "11:25~12:10", "13:10~13:55", "14:05~14:50", "15:00~15:45", ""], // 화
+        ["08:30~09:15", "09:25~10:10", "10:30~11:15", "11:25~12:10", "13:10~13:55", "14:05~14:50", "15:00~15:45", ""], // 수
+        ["08:30~09:15", "09:25~10:10", "10:30~11:15", "11:25~12:10", "13:10~13:55", "14:05~14:50", "15:00~15:45", ""], // 목
+        ["08:30~09:15", "09:25~10:10", "10:25~11:10", "11:20~12:05", "13:05~13:50", "14:00~14:45", "14:55~15:40", "15:45~16:30"]  // 금
+      ],
       lunchTime: ""
     });
   }
@@ -131,9 +175,11 @@ function renderTimetable() {
     timeLabel.classList.add("time-label");
     timeLabel.innerHTML = `<span>${rowIndex + 1}</span>`;
 
+    // 요일별 시간 텍스트 표시 (가장 많이 사용되는 시간 표시 - 월~목)
     const timeText = document.createElement("div");
     timeText.classList.add("time-text");
-    timeText.innerHTML = currentData.times[rowIndex] ? currentData.times[rowIndex].replace("-", "<br>-<br>").replace("~", "<br>~<br>") : "시간<br>입력";
+    const mondayTime = currentData.times && currentData.times[0] && currentData.times[0][rowIndex] ? currentData.times[0][rowIndex] : "시간<br>입력";
+    timeText.innerHTML = mondayTime.replace("-", "<br>-<br>").replace("~", "<br>~<br>");
     timeLabel.appendChild(timeText);
 
     timeLabel.addEventListener("click", () => openTimeModal(rowIndex));
@@ -145,6 +191,17 @@ function renderTimetable() {
       card.classList.add("subject-card");
       if (cellData.colorClass) card.classList.add(cellData.colorClass);
       if (cellData.highlight) card.classList.add("current-class");
+
+      // 해당 요일의 시간 표시 (카드 상단에 작게)
+      const dayTime = currentData.times && currentData.times[colIndex] && currentData.times[colIndex][rowIndex] ? currentData.times[colIndex][rowIndex] : "";
+      if (dayTime && dayTime !== mondayTime) {
+        const timeInfo = document.createElement("div");
+        timeInfo.style.fontSize = "10px";
+        timeInfo.style.color = "#999";
+        timeInfo.style.marginBottom = "4px";
+        timeInfo.textContent = dayTime;
+        card.appendChild(timeInfo);
+      }
 
       const subjectName = document.createElement("div");
       subjectName.classList.add("subject-name");
