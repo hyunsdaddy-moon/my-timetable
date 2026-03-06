@@ -209,7 +209,7 @@ function renderTabs() {
 
   // 맨 끝에 '+' 새 시간표 추가 버튼
   const addBtn = document.createElement("button");
-  addBtn.classList.add("nav-item");
+  addBtn.classList.add("nav-item", "ignore-drag"); // 🚨 드래그 제외 처리 (ignore-drag 추가)
   addBtn.innerHTML = `
     <i class="fa-solid fa-plus"></i>
     <span>추가</span>
@@ -228,6 +228,44 @@ function renderTabs() {
     saveAllData();
   });
   tabsArea.appendChild(addBtn);
+
+  // 🪄 SortableJS 적용 (드래그 앤 드롭으로 탭 위치 실시간 변경)
+  if (typeof Sortable !== 'undefined') {
+    // 기존에 적용된 인스턴스가 있다면 파괴 (오류 방지)
+    if (window.tabsSortable) {
+      window.tabsSortable.destroy();
+    }
+
+    // 탭을 감싸는 영역(tabsArea)에 마법 부여
+    window.tabsSortable = Sortable.create(tabsArea, {
+      animation: 150,
+      filter: '.ignore-drag', // 추가 버튼은 드래그 제외
+      onMove: function (evt) {
+        // 추가 버튼 오른쪽으로 넘어가기(추가 버튼의 자리 뺏기)를 막음
+        return evt.related.className.indexOf('ignore-drag') === -1;
+      },
+      onEnd: function (evt) {
+        if (evt.oldIndex === evt.newIndex) return; // 제자리인 경우 무시
+
+        // 배열에서 데이터 순서 진짜로 변경 (요소를 빼서 새 자리에 넣기)
+        const movedItem = tablesData.splice(evt.oldIndex, 1)[0];
+        tablesData.splice(evt.newIndex, 0, movedItem);
+
+        // 현재 선택되어 보고 있는 시간표(currentTableIndex) 값 보정 로직
+        if (currentTableIndex === evt.oldIndex) {
+          currentTableIndex = evt.newIndex; // 내 시간표를 옮긴 거라면 그대로 따라감
+        } else if (currentTableIndex > evt.oldIndex && currentTableIndex <= evt.newIndex) {
+          currentTableIndex--;
+        } else if (currentTableIndex < evt.oldIndex && currentTableIndex >= evt.newIndex) {
+          currentTableIndex++;
+        }
+
+        saveAllData();     // 데이터 클라우드 & 서랍 공간에 다시 저장
+        renderTabs();      // 바뀐 순서로 다시 그림
+        renderTimetable(); // 화면 내부도 최신화
+      }
+    });
+  }
 }
 
 // ----------------------------------------------------
