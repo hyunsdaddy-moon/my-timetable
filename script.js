@@ -673,6 +673,100 @@ if (scheduleModal) {
 }
 
 // ----------------------------------------------------
+// 📖 사용자 가이드 팝업 제어
+// ----------------------------------------------------
+const guideBtn = document.getElementById("guide-btn");
+const guideModal = document.getElementById("guideModal");
+const btnCloseGuide = document.getElementById("btnCloseGuide");
+const guideContent = document.getElementById("guideContent");
+
+// 간단한 마크다운 변환 함수
+function simpleMarkdownToHTML(markdown) {
+  let html = markdown;
+
+  // 코드 블록 (```)
+  html = html.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+
+  // 인라인 코드 (`)
+  html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+
+  // 제목 (# ## ###)
+  html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+
+  // 굵은 글씨 (**)
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+  // 인용구 (>)
+  html = html.replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>');
+
+  // 구분선 (---)
+  html = html.replace(/^---$/gm, '<hr>');
+
+  // 순서 없는 리스트
+  html = html.replace(/^\- (.+)$/gm, '<li>$1</li>');
+  html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+
+  // 순서 있는 리스트
+  html = html.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
+
+  // 링크 [텍스트](URL)
+  html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+
+  // 줄바꿈
+  html = html.replace(/\n\n/g, '</p><p>');
+  html = '<p>' + html + '</p>';
+
+  return html;
+}
+
+// 가이드 불러오기
+async function loadGuide() {
+  try {
+    const response = await fetch('사용자가이드.md');
+    if (!response.ok) throw new Error('가이드를 불러올 수 없습니다');
+
+    const markdown = await response.text();
+    const html = simpleMarkdownToHTML(markdown);
+    guideContent.innerHTML = html;
+  } catch (error) {
+    console.error('가이드 로드 실패:', error);
+    guideContent.innerHTML = `
+      <div style="text-align: center; padding: 40px 20px; color: #999;">
+        <i class="fa-solid fa-exclamation-triangle" style="font-size: 48px; color: #ffa3cb; margin-bottom: 20px;"></i>
+        <h3>가이드를 불러올 수 없습니다</h3>
+        <p>인터넷 연결을 확인해주세요.</p>
+      </div>
+    `;
+  }
+}
+
+// 가이드 버튼 클릭
+if (guideBtn && guideModal) {
+  guideBtn.addEventListener("click", () => {
+    guideModal.classList.remove("hidden");
+    loadGuide(); // 가이드 불러오기
+  });
+}
+
+// X 버튼으로 가이드 닫기
+if (btnCloseGuide && guideModal) {
+  btnCloseGuide.addEventListener("click", () => {
+    guideModal.classList.add("hidden");
+  });
+}
+
+// 배경 클릭으로 가이드 닫기
+if (guideModal) {
+  guideModal.addEventListener("click", (event) => {
+    if (event.target === guideModal) {
+      guideModal.classList.add("hidden");
+    }
+  });
+}
+
+// ----------------------------------------------------
 // 🌟 7. 학사일정 이미지 줌인/줌아웃 (Panzoom) 마법 적용
 // ----------------------------------------------------
 const calImg1 = document.getElementById('calImg1');

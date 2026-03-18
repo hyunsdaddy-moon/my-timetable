@@ -42,8 +42,12 @@
         <!-- 사용자 ID 표시 (작은 뱃지 형태) -->
         <div id="userBadge" class="user-badge" style="display: none;"></div>
       </div>
-      <button class="action-btn btn-secondary font-cute" id="refresh-btn"
+      <button class="action-btn btn-secondary font-cute" id="guide-btn"
         style="margin-left:10px; padding: 5px 12px; font-size: 1.1rem; white-space: nowrap; flex-shrink: 0;">
+        <i class="fa-solid fa-circle-question"></i>
+      </button>
+      <button class="action-btn btn-secondary font-cute" id="refresh-btn"
+        style="padding: 5px 12px; font-size: 1.1rem; white-space: nowrap; flex-shrink: 0;">
         <i class="fa-solid fa-rotate-right"></i>
       </button>
       <button class="action-btn btn-secondary font-cute" id="schedule-btn"
@@ -273,6 +277,24 @@
                 onerror="this.src='https://placehold.co/600x800/E6E6FA/9370DB?text=cal2.png+%E2%86%91+Upload';">
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 📖 사용자 가이드 팝업창 -->
+    <div id="guideModal" class="modal-overlay hidden">
+      <div class="modal-content guide-modal-content">
+        <div class="modal-header-flex">
+          <h2 class="modal-title" style="margin-bottom: 0;">📱 사용자 가이드</h2>
+          <button type="button" class="close-schedule-btn" id="btnCloseGuide"><i
+              class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="schedule-scroll-area" id="guideContent">
+          <p style="text-align: center; color: #999; padding: 40px 20px;">
+            <i class="fa-solid fa-spinner fa-spin" style="font-size: 24px;"></i><br><br>
+            가이드를 불러오는 중...
+          </p>
         </div>
       </div>
     </div>
