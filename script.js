@@ -1,7 +1,7 @@
 // ----------------------------------------------------
 // ☁️ 1. 구글 파이어베이스(Firebase) 도서관 연결 준비!
 // ----------------------------------------------------
-// [선생님 전용 열쇠칸!] 
+// [선생님 전용 열쇠칸!]
 const firebaseConfig = {
   databaseURL: "https://my-school-timetable-f8cdd-default-rtdb.asia-southeast1.firebasedatabase.app"
 };
@@ -15,6 +15,31 @@ try {
   console.log("☁️ 실시간 동기화 모드로 작동합니다!");
 }
 
+// ----------------------------------------------------
+// 🔑 URL 파라미터로 사용자 식별하기
+// ----------------------------------------------------
+// URL에서 ?user=홍길동 같은 파라미터를 읽어서 각자의 시간표를 분리합니다!
+function getUserIdFromURL() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const userId = urlParams.get('user');
+  // user 파라미터가 없으면 기본값 'default' 사용
+  return userId || 'default';
+}
+
+const currentUserId = getUserIdFromURL();
+console.log(`👤 현재 사용자: ${currentUserId}`);
+
+// 사용자 뱃지 표시 (default가 아닐 때만)
+function displayUserBadge() {
+  const userBadge = document.getElementById('userBadge');
+  if (currentUserId !== 'default') {
+    userBadge.textContent = `👤 ${currentUserId}`;
+    userBadge.style.display = 'inline-block';
+  }
+}
+
+// 페이지 로드 시 사용자 뱃지 표시
+displayUserBadge();
 
 const TOTAL_ROWS = 8;
 const TOTAL_COLS = 5;
@@ -37,7 +62,8 @@ let currentTableIndex = 0;
 
 // 파이어베이스(클라우드)에서 실시간으로 데이터 감시하기!
 if (db) {
-  const timetableRef = db.ref('teacher_timetable');
+  // 사용자별로 다른 경로를 사용합니다! (예: timetables/teacher1, timetables/teacher2)
+  const timetableRef = db.ref(`timetables/${currentUserId}`);
 
   // 누군가(폰이나 컴퓨터) 데이터를 바꾸면 이 마법이 즉시 실행됩니다!
   timetableRef.on('value', (snapshot) => {
@@ -69,7 +95,9 @@ if (db) {
   });
 } else {
   // 클라우드 연결이 안 되었을 때 (혹시 모를 대비책)
-  const savedData = localStorage.getItem("myAllTimetableData");
+  // 사용자별로 다른 localStorage 키를 사용합니다
+  const localStorageKey = `myTimetableData_${currentUserId}`;
+  const savedData = localStorage.getItem(localStorageKey);
   if (savedData) {
     tablesData = JSON.parse(savedData);
   } else {
@@ -272,13 +300,15 @@ function renderTabs() {
 // 🌟 3. 데이터 저장 및 ✨실시간 동기화 마법✨
 // ----------------------------------------------------
 function saveAllData() {
-  // 1단계: 내 서랍에 안전하게 보관 (기본)
-  localStorage.setItem("myAllTimetableData", JSON.stringify(tablesData));
+  // 1단계: 내 서랍에 안전하게 보관 (기본) - 사용자별 키로 저장
+  const localStorageKey = `myTimetableData_${currentUserId}`;
+  localStorage.setItem(localStorageKey, JSON.stringify(tablesData));
 
   // 2단계: 진짜 클라우드(DB)가 연결되어 있다면 도서관으로 전송!
+  // 사용자별로 다른 경로에 저장합니다 (예: timetables/teacher1)
   if (db) {
     try {
-      db.ref('teacher_timetable').set({
+      db.ref(`timetables/${currentUserId}`).set({
         tables: tablesData
       });
     } catch (e) { }

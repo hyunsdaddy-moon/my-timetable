@@ -753,3 +753,17 @@ body {
     /* 모바일에서 제목 표시줄 글꼴 살짝 줄임 */
   }
 }
+
+/* 👤 사용자 ID 뱃지 스타일 */
+.user-badge {
+  display: inline-block;
+  font-size: 11px;
+  padding: 3px 10px;
+  background: linear-gradient(135deg, #ff6b9d 0%, #ffa06b 100%);
+  color: white;
+  border-radius: 12px;
+  font-weight: 600;
+  margin-top: 5px;
+  box-shadow: 0 2px 6px rgba(255, 107, 157, 0.3);
+  letter-spacing: 0.3px;
+}
