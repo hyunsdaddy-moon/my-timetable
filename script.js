@@ -233,6 +233,73 @@ function renderTabs() {
       renderTimetable();
     });
 
+    // 길게 누르기로 탭 삭제 기능 (첫 번째 탭은 삭제 불가)
+    let pressTimer;
+    let isDragging = false;
+    let startX, startY;
+
+    btn.addEventListener("touchstart", (e) => {
+      if (index === 0) return; // 첫 번째 탭은 삭제 금지
+      isDragging = false;
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+
+      pressTimer = setTimeout(() => {
+        // 드래그 중이 아닐 때만 삭제 확인
+        if (!isDragging && confirm(`"${table.title}" 시간표를 삭제하시겠습니까?`)) {
+          deleteTab(index);
+        }
+      }, 1000); // 1초로 증가
+    });
+
+    btn.addEventListener("touchmove", (e) => {
+      // 5px 이상 움직이면 드래그로 간주
+      const moveX = Math.abs(e.touches[0].clientX - startX);
+      const moveY = Math.abs(e.touches[0].clientY - startY);
+      if (moveX > 5 || moveY > 5) {
+        isDragging = true;
+        clearTimeout(pressTimer);
+      }
+    });
+
+    btn.addEventListener("touchend", () => {
+      clearTimeout(pressTimer);
+      isDragging = false;
+    });
+
+    // PC용 마우스 길게 누르기
+    btn.addEventListener("mousedown", (e) => {
+      if (index === 0) return; // 첫 번째 탭은 삭제 금지
+      isDragging = false;
+      startX = e.clientX;
+      startY = e.clientY;
+
+      pressTimer = setTimeout(() => {
+        if (!isDragging && confirm(`"${table.title}" 시간표를 삭제하시겠습니까?`)) {
+          deleteTab(index);
+        }
+      }, 1000);
+    });
+
+    btn.addEventListener("mousemove", (e) => {
+      const moveX = Math.abs(e.clientX - startX);
+      const moveY = Math.abs(e.clientY - startY);
+      if (moveX > 5 || moveY > 5) {
+        isDragging = true;
+        clearTimeout(pressTimer);
+      }
+    });
+
+    btn.addEventListener("mouseup", () => {
+      clearTimeout(pressTimer);
+      isDragging = false;
+    });
+
+    btn.addEventListener("mouseleave", () => {
+      clearTimeout(pressTimer);
+      isDragging = false;
+    });
+
     tabsArea.appendChild(btn);
   });
 
@@ -295,6 +362,32 @@ function renderTabs() {
       }
     });
   }
+}
+
+// 탭 삭제 기능
+function deleteTab(index) {
+  // 최소 1개의 탭은 유지해야 함
+  if (tablesData.length <= 1) {
+    alert("최소 1개의 시간표는 필요합니다.");
+    return;
+  }
+
+  // 첫 번째 탭은 삭제 불가
+  if (index === 0) {
+    alert("첫 번째 시간표는 삭제할 수 없습니다.");
+    return;
+  }
+
+  // 배열에서 해당 인덱스 제거
+  tablesData.splice(index, 1);
+
+  // 현재 보고 있던 탭이 삭제된 경우 첫 번째 탭으로 이동
+  if (currentTableIndex >= index) {
+    currentTableIndex = Math.max(0, currentTableIndex - 1);
+  }
+
+  // 데이터 저장 및 화면 갱신
+  saveAllData();
 }
 
 // ----------------------------------------------------
@@ -546,6 +639,14 @@ renderTimetable();
 const scheduleBtn = document.getElementById("schedule-btn");
 const scheduleModal = document.getElementById("scheduleModal");
 const btnCloseSchedule = document.getElementById("btnCloseSchedule");
+
+// 새로고침 버튼 제어
+const refreshBtn = document.getElementById("refresh-btn");
+if (refreshBtn) {
+  refreshBtn.addEventListener("click", () => {
+    location.reload();
+  });
+}
 
 // 상단 버튼을 누르면 팝업창 나타나기!
 if (scheduleBtn && scheduleModal) {
