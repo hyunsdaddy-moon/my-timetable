@@ -344,9 +344,19 @@ body {
   border: none;
 }
 
+.color-skyblue .subject-name,
+.color-skyblue .teacher-name {
+  color: #2b2b2b !important;
+}
+
 .color-pink {
   background-color: #ffdce5;
   border: none;
+}
+
+.color-pink .subject-name,
+.color-pink .teacher-name {
+  color: #2b2b2b !important;
 }
 
 .color-green {
@@ -354,9 +364,19 @@ body {
   border: none;
 }
 
+.color-green .subject-name,
+.color-green .teacher-name {
+  color: #2b2b2b !important;
+}
+
 .color-yellow {
   background-color: #fdf5c7;
   border: none;
+}
+
+.color-yellow .subject-name,
+.color-yellow .teacher-name {
+  color: #2b2b2b !important;
 }
 
 .color-purple {
@@ -364,9 +384,19 @@ body {
   border: none;
 }
 
+.color-purple .subject-name,
+.color-purple .teacher-name {
+  color: #2b2b2b !important;
+}
+
 .color-orange {
   background-color: #fde2ca;
   border: none;
+}
+
+.color-orange .subject-name,
+.color-orange .teacher-name {
+  color: #2b2b2b !important;
 }
 
 /* 자습/빈 칸 (흰색 배경에 테두리 점선 처리) */
