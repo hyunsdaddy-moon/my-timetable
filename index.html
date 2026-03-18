@@ -43,6 +43,9 @@
         <div id="userBadge" class="user-badge" style="display: none;"></div>
       </div>
       <div class="header-buttons">
+        <button class="action-btn btn-secondary font-cute" id="theme-btn">
+          <i class="fa-solid fa-palette"></i>
+        </button>
         <button class="action-btn btn-secondary font-cute" id="guide-btn">
           <i class="fa-solid fa-circle-question"></i>
         </button>
@@ -300,6 +303,74 @@
             <i class="fa-solid fa-spinner fa-spin" style="font-size: 24px;"></i><br><br>
             가이드를 불러오는 중...
           </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 🎨 테마 선택 팝업창 -->
+    <div id="themeModal" class="modal-overlay hidden">
+      <div class="modal-content theme-modal-content">
+        <h2 class="modal-title">🎨 디자인 테마 선택</h2>
+        <p style="text-align: center; color: #666; font-size: 14px; margin-bottom: 20px;">
+          원하는 테마를 선택해보세요!
+        </p>
+
+        <div class="theme-grid">
+          <div class="theme-card" data-theme="pink">
+            <div class="theme-preview theme-preview-pink">
+              <div class="preview-dot"></div>
+              <div class="preview-dot"></div>
+              <div class="preview-dot"></div>
+            </div>
+            <h3>🌸 파스텔 핑크</h3>
+            <p>부드럽고 귀여운 핑크</p>
+          </div>
+
+          <div class="theme-card" data-theme="blue">
+            <div class="theme-preview theme-preview-blue">
+              <div class="preview-dot"></div>
+              <div class="preview-dot"></div>
+              <div class="preview-dot"></div>
+            </div>
+            <h3>🌊 시원한 블루</h3>
+            <p>깔끔하고 시원한 파란색</p>
+          </div>
+
+          <div class="theme-card" data-theme="green">
+            <div class="theme-preview theme-preview-green">
+              <div class="preview-dot"></div>
+              <div class="preview-dot"></div>
+              <div class="preview-dot"></div>
+            </div>
+            <h3>🌿 자연 그린</h3>
+            <p>편안하고 자연스러운 초록</p>
+          </div>
+
+          <div class="theme-card" data-theme="orange">
+            <div class="theme-preview theme-preview-orange">
+              <div class="preview-dot"></div>
+              <div class="preview-dot"></div>
+              <div class="preview-dot"></div>
+            </div>
+            <h3>🌅 따뜻한 오렌지</h3>
+            <p>활기차고 따뜻한 주황</p>
+          </div>
+
+          <div class="theme-card" data-theme="purple">
+            <div class="theme-preview theme-preview-purple">
+              <div class="preview-dot"></div>
+              <div class="preview-dot"></div>
+              <div class="preview-dot"></div>
+            </div>
+            <h3>💜 우아한 퍼플</h3>
+            <p>고급스럽고 우아한 보라</p>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+          <button id="btnCloseTheme" class="action-btn btn-secondary" style="padding: 10px 24px;">
+            닫기
+          </button>
         </div>
       </div>
     </div>

@@ -792,3 +792,71 @@ if (calImg2 && typeof Panzoom !== 'undefined') {
   // 컴퓨터 마우스 휠로 확대/축소 지원
   calImg2.parentElement.addEventListener('wheel', pz2.zoomWithWheel);
 }
+
+// ----------------------------------------------------
+// 🎨 테마 선택 팝업 제어
+// ----------------------------------------------------
+const themeBtn = document.getElementById("theme-btn");
+const themeModal = document.getElementById("themeModal");
+const btnCloseTheme = document.getElementById("btnCloseTheme");
+const themeCards = document.querySelectorAll(".theme-card");
+
+// 저장된 테마 불러오기 (localStorage에서)
+function loadTheme() {
+  const savedTheme = localStorage.getItem('selectedTheme') || 'pink';
+  applyTheme(savedTheme);
+}
+
+// 테마 적용하기
+function applyTheme(themeName) {
+  // body에 data-theme 속성 설정
+  document.body.setAttribute('data-theme', themeName);
+
+  // 모든 테마 카드에서 active 클래스 제거
+  themeCards.forEach(card => {
+    card.classList.remove('active');
+  });
+
+  // 선택된 테마 카드에 active 클래스 추가
+  const selectedCard = document.querySelector(`.theme-card[data-theme="${themeName}"]`);
+  if (selectedCard) {
+    selectedCard.classList.add('active');
+  }
+
+  // localStorage에 저장
+  localStorage.setItem('selectedTheme', themeName);
+}
+
+// 테마 버튼 클릭 - 모달 열기
+if (themeBtn && themeModal) {
+  themeBtn.addEventListener("click", () => {
+    themeModal.classList.remove("hidden");
+  });
+}
+
+// X 버튼으로 테마 모달 닫기
+if (btnCloseTheme && themeModal) {
+  btnCloseTheme.addEventListener("click", () => {
+    themeModal.classList.add("hidden");
+  });
+}
+
+// 배경 클릭으로 테마 모달 닫기
+if (themeModal) {
+  themeModal.addEventListener("click", (event) => {
+    if (event.target === themeModal) {
+      themeModal.classList.add("hidden");
+    }
+  });
+}
+
+// 테마 카드 클릭 이벤트
+themeCards.forEach(card => {
+  card.addEventListener("click", () => {
+    const themeName = card.getAttribute("data-theme");
+    applyTheme(themeName);
+  });
+});
+
+// 페이지 로드 시 저장된 테마 적용
+loadTheme();
