@@ -15,6 +15,10 @@
   --primary-color: #ff4785;
   --primary-dark: #ff1c8a;
   --time-label-color: #ff1c8a;
+  --text-color: #333333;
+  --text-secondary: #8c8c8c;
+  --card-bg: #ffffff;
+  --modal-bg: #ffffff;
 }
 
 /* 테마별 색상 변수 */
@@ -24,6 +28,10 @@ body[data-theme="pink"] {
   --primary-color: #ff4785;
   --primary-dark: #ff1c8a;
   --time-label-color: #ff1c8a;
+  --text-color: #333333;
+  --text-secondary: #8c8c8c;
+  --card-bg: #ffffff;
+  --modal-bg: #ffffff;
 }
 
 body[data-theme="blue"] {
@@ -32,6 +40,10 @@ body[data-theme="blue"] {
   --primary-color: #4a90e2;
   --primary-dark: #2c6cb8;
   --time-label-color: #2c6cb8;
+  --text-color: #333333;
+  --text-secondary: #8c8c8c;
+  --card-bg: #ffffff;
+  --modal-bg: #ffffff;
 }
 
 body[data-theme="green"] {
@@ -40,6 +52,10 @@ body[data-theme="green"] {
   --primary-color: #10b981;
   --primary-dark: #059669;
   --time-label-color: #059669;
+  --text-color: #333333;
+  --text-secondary: #8c8c8c;
+  --card-bg: #ffffff;
+  --modal-bg: #ffffff;
 }
 
 body[data-theme="orange"] {
@@ -48,6 +64,10 @@ body[data-theme="orange"] {
   --primary-color: #f59e0b;
   --primary-dark: #d97706;
   --time-label-color: #d97706;
+  --text-color: #333333;
+  --text-secondary: #8c8c8c;
+  --card-bg: #ffffff;
+  --modal-bg: #ffffff;
 }
 
 body[data-theme="purple"] {
@@ -56,6 +76,34 @@ body[data-theme="purple"] {
   --primary-color: #a855f7;
   --primary-dark: #7e22ce;
   --time-label-color: #7e22ce;
+  --text-color: #333333;
+  --text-secondary: #8c8c8c;
+  --card-bg: #ffffff;
+  --modal-bg: #ffffff;
+}
+
+body[data-theme="dark"] {
+  --bg-color: #1a1a1a;
+  --dot-color: #2d2d2d;
+  --primary-color: #ff6b9d;
+  --primary-dark: #ff4785;
+  --time-label-color: #ff6b9d;
+  --text-color: #e0e0e0;
+  --text-secondary: #a0a0a0;
+  --card-bg: #2a2a2a;
+  --modal-bg: #2a2a2a;
+}
+
+body[data-theme="vibrant"] {
+  --bg-color: #ffffff;
+  --dot-color: #f0f0f0;
+  --primary-color: #ff0066;
+  --primary-dark: #cc0052;
+  --time-label-color: #cc0052;
+  --text-color: #000000;
+  --text-secondary: #666666;
+  --card-bg: #ffffff;
+  --modal-bg: #ffffff;
 }
 
 /* 폰트 및 바디: 도트 무늬 배경 설정 */
@@ -150,7 +198,7 @@ body {
   font-family: 'Nanum Pen Script', cursive;
   /* 손글씨 느낌 폰트 강조 */
   font-size: 26px;
-  color: #333333;
+  color: var(--text-color);
   margin-top: -3px;
   line-height: 1.2;
 }
@@ -275,7 +323,7 @@ body {
 .subject-name {
   font-size: 14px;
   font-weight: 600;
-  color: #2b2b2b;
+  color: var(--text-color);
   margin-bottom: 6px;
   /* 선생님 이름과의 간격 */
   text-align: center;
@@ -286,7 +334,7 @@ body {
 /* 선생님 이름 글씨 (작고 회색) */
 .teacher-name {
   font-size: 11px;
-  color: #8c8c8c;
+  color: var(--text-secondary);
   text-align: center;
 }
 
@@ -398,7 +446,7 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: #ffffff;
+  background-color: var(--card-bg);
   border-top-left-radius: 40px;
   border-top-right-radius: 40px;
   height: 85px;
@@ -525,7 +573,7 @@ body {
 }
 
 .modal-content {
-  background-color: #ffffff;
+  background-color: var(--modal-bg);
   width: 100%;
   max-width: 340px;
   border-radius: 24px;
@@ -541,7 +589,7 @@ body {
 
 .modal-title {
   text-align: center;
-  color: #333;
+  color: var(--text-color);
   font-size: 22px;
   margin-bottom: 5px;
   font-weight: 600;
@@ -567,15 +615,15 @@ body {
   border-radius: 12px;
   font-size: 16px;
   outline: none;
-  background-color: #f9fafc;
+  background-color: var(--card-bg);
   transition: border-color 0.2s;
-  color: #333;
+  color: var(--text-color);
 }
 
 .input-group input:focus {
   border-color: #ffa3cb;
   /* 입력할 땐 핑크색 테두리로! */
-  background-color: #ffffff;
+  background-color: var(--card-bg);
 }
 
 /* 동그란 색상 선택기 박스 */
@@ -1080,6 +1128,14 @@ body {
 
 .theme-preview-purple {
   background: linear-gradient(135deg, #e9d5ff 0%, #c084fc 100%);
+}
+
+.theme-preview-dark {
+  background: linear-gradient(135deg, #1a1a1a 0%, #3d3d3d 100%);
+}
+
+.theme-preview-vibrant {
+  background: linear-gradient(135deg, #ff0066 0%, #ff6699 100%);
 }
 
 .theme-card h3 {
