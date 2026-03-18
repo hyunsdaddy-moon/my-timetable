@@ -79,18 +79,19 @@ if (db) {
       renderTimetable();
       renderTabs();
     } else {
-      // 만약 클라우드가 텅텅 비어있다면(처음 사용하는 거라면) 기본 시간표를 만들어줍니다.
-      if (tablesData.length === 0) {
-        tablesData.push({
-          id: Date.now(),
-          title: "1학기 🏫",
-          schedule: getEmptySchedule(),
-          // 교시별 시간 (월~금 동일) - 초기 세팅 비우기
-          times: ["", "", "", "", "", "", "", ""],
-          lunchTime: ""
-        });
-        saveAllData(); // 만든 걸 클라우드에 올려서 채워주기
-      }
+      // 만약 클라우드가 텅텅 비어있다면(처음 사용하는 거라면) 완전히 새로운 빈 시간표를 만들어줍니다.
+      // 기존 localStorage 데이터는 무시하고 항상 새로 시작합니다!
+      tablesData = [{
+        id: Date.now(),
+        title: "1학기 🏫",
+        schedule: getEmptySchedule(),
+        // 교시별 시간 (월~금 동일) - 초기 세팅 비우기
+        times: ["", "", "", "", "", "", "", ""],
+        lunchTime: ""
+      }];
+      saveAllData(); // 만든 걸 클라우드에 올려서 채워주기
+      renderTimetable();
+      renderTabs();
     }
   });
 } else {
