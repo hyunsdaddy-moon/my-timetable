@@ -40,17 +40,37 @@ body {
 .top-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
-  /* 제목이 약간 아래쪽으로 가도록 */
-  padding: 30px 24px 20px 24px;
+  align-items: center;
+  padding: 20px 16px 12px 16px;
 }
 
 .title-area {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  width: 100%;
-  /* 부모 요소부터 화면을 꽉 채우도록 설정 */
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* 헤더 버튼 그룹 */
+.header-buttons {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-shrink: 0;
+  margin-left: 10px;
+}
+
+.header-buttons .action-btn {
+  padding: 6px 10px;
+  font-size: 1rem;
+  white-space: nowrap;
+  min-width: auto;
+}
+
+/* 학사일정 버튼만 텍스트가 있어서 조금 더 넓게 */
+#schedule-btn {
+  padding: 6px 12px;
 }
 
 .sub-title {
@@ -66,13 +86,12 @@ body {
   border: none;
   font-family: inherit;
   color: #ff4785;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   outline: none;
   width: 100%;
-  /* 빨간 상자 크기만큼 꽉 채웁니다! */
   padding: 0;
-  margin-bottom: 2px;
+  margin-bottom: 0px;
 }
 
 .input-title:focus {
@@ -82,9 +101,10 @@ body {
 .main-title {
   font-family: 'Nanum Pen Script', cursive;
   /* 손글씨 느낌 폰트 강조 */
-  font-size: 32px;
+  font-size: 26px;
   color: #333333;
-  margin-top: -5px;
+  margin-top: -3px;
+  line-height: 1.2;
 }
 
 /* 2. 메인 시간표 영역 (스크롤 가능하게) */
